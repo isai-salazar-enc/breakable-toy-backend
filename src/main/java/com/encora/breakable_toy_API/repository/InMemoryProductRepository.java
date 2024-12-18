@@ -43,12 +43,17 @@ public class InMemoryProductRepository implements ProductRepository{
 
     @Override
     public Product create(Product product) {
-        return null;
+        product.setId(currentId);
+        products.put(currentId++, product);
+        return product;
     }
 
     @Override
     public Product outOfStock(Long id) {
-        return null;
+        Product item = products.get(id);
+        item.setStock(0);
+        item.setUpdatedAt(LocalDateTime.now());
+        return item;
     }
 
     @Override
