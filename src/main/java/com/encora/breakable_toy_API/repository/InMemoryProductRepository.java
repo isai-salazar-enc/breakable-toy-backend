@@ -65,11 +65,6 @@ public class InMemoryProductRepository implements ProductRepository{
     }
 
     @Override
-    public Product inStock(Long id, int stock) {
-        return null;
-    }
-
-    @Override
     public Product update(Product product) {
         products.put(product.getId(), product);
         return product;
