@@ -1,6 +1,7 @@
 package com.encora.breakable_toy_API.controller;
 
 import com.encora.breakable_toy_API.models.Product;
+import com.encora.breakable_toy_API.models.UpdateStockDTO;
 import com.encora.breakable_toy_API.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,5 +41,10 @@ public class ProductController {
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PutMapping("products/{id}/instock")
+    public ResponseEntity<?> setProductInStock(@PathVariable Long id, @RequestBody UpdateStockDTO updateStockDTO){
+        return productService.inStock(id, updateStockDTO);   
     }
 }

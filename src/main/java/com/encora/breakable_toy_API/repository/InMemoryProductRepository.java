@@ -23,6 +23,14 @@ public class InMemoryProductRepository implements ProductRepository{
         }
     }
 
+    /*
+     * Find products by Id or return a null object.
+     */
+    @Override
+    public Optional<Product> findById(Long id){
+        return Optional.ofNullable(products.get(id));
+    }
+
     // Return every product
     @Override
     public List<Product> findAll(int page) {
@@ -63,6 +71,7 @@ public class InMemoryProductRepository implements ProductRepository{
 
     @Override
     public Product update(Product product) {
-        return null;
+        products.put(product.getId(), product);
+        return product;
     }
 }
