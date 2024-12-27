@@ -1,6 +1,7 @@
 package com.encora.breakable_toy_API.controller;
 
 import com.encora.breakable_toy_API.models.Product;
+import com.encora.breakable_toy_API.models.ProductWithCategoryDTO;
 import com.encora.breakable_toy_API.models.UpdateStockDTO;
 import com.encora.breakable_toy_API.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,11 @@ public class ProductController {
     }
 
     // TODO: change to /products (1 to 10) and manage pagination under the water
-    @GetMapping("/products/{page}")
-    public List<Product> getPaginatedProducts(@PathVariable int page){
+    @GetMapping(value = {"products", "/products/{page}"})
+    public List<ProductWithCategoryDTO> getPaginatedProducts(@PathVariable(required = false) Integer page){
+        if(page == null){
+            page = 1;
+        }
         return productService.getProducts(page);
     }
 
@@ -46,5 +50,10 @@ public class ProductController {
     @PutMapping("products/{id}/instock")
     public ResponseEntity<?> setProductInStock(@PathVariable Long id, @RequestBody UpdateStockDTO updateStockDTO){
         return productService.inStock(id, updateStockDTO);   
+    }
+
+    @PutMapping("products/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable(value = "id") Long id, @RequestBody Product product){
+        return productService.updateProduct(product, id);
     }
 }
