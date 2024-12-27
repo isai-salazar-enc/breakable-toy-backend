@@ -1,6 +1,7 @@
 package com.encora.breakable_toy_API.repository;
 
 import com.encora.breakable_toy_API.models.Product;
+import com.encora.breakable_toy_API.models.ProductWithCategoryDTO;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +20,7 @@ public class InMemoryProductRepository implements ProductRepository{
     @PostConstruct
     public void loadInitialData(){
         for(int i = 1; i<=30; i++){
-            products.put(currentId++, new Product( (long) i, "Product " + i, 100F, LocalDate.now(), 10, LocalDateTime.now(), LocalDateTime.now()));
+            products.put(currentId++, new Product( (long) i, (long) (i%5 + 1), "Product " + i, 100F, LocalDate.now(), 10, LocalDateTime.now(), LocalDateTime.now()));
         }
     }
 
@@ -33,20 +34,8 @@ public class InMemoryProductRepository implements ProductRepository{
 
     // Return every product
     @Override
-    public List<Product> findAll(int page) {
-        if(page<1){
-            throw new IllegalAccessError("Page value not allowed");
-        }
-
-        int size = 10;
-        List<Product> productList = new ArrayList<Product>(products.values());
-        int fromIndex = (page - 1) * size;
-        int toIndex = Math.min(fromIndex + size, productList.size());
-        if (fromIndex >= productList.size()) {
-            return Collections.emptyList();
-        }
-
-        return productList.subList(fromIndex, toIndex); // Pagination
+    public List<Product> findAll() {
+        return new ArrayList<>(products.values());
     }
 
     @Override
