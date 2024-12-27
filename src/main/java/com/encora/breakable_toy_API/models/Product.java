@@ -99,6 +99,7 @@ public class Product {
 */
 public class Product{
     private Long id;
+    private Long idCategory;
     private String name; // Max 120 characters
     private Float unitPrice;
     private LocalDate expirationDate;
@@ -109,32 +110,15 @@ public class Product{
     // Constructor
     public Product(){}
 
-    public Product(Long id, String name, Float unitPrice, LocalDate expirationDate, Integer stock, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Product(Long id, Long idCategory, String name, Float unitPrice, LocalDate expirationDate, Integer stock, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
+        this.idCategory = idCategory;
         this.name = name;
         this.unitPrice = unitPrice;
         this.expirationDate = expirationDate;
         this.stock = stock;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-    }
-
-    public Product(String name, Float unitPrice, LocalDate expirationDate, Integer stock, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.name = name;
-        this.unitPrice = unitPrice;
-        this.expirationDate = expirationDate;
-        this.stock = stock;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public Product(String name, Float unitPrice, LocalDate expirationDate, Integer stock) {
-        this.name = name;
-        this.unitPrice = unitPrice;
-        this.expirationDate = expirationDate;
-        this.stock = stock;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
     }
 
     // Setters & getters
@@ -195,10 +179,19 @@ public class Product{
         this.updatedAt = updatedAt;
     }
 
+    public Long getIdCategory() {
+        return idCategory;
+    }
+
+    public void setIdCategory(Long idCategory) {
+        this.idCategory = idCategory;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
                 "id=" + id +
+                ", idCategory=" + idCategory +
                 ", name='" + name + '\'' +
                 ", unitPrice=" + unitPrice +
                 ", expirationDate=" + expirationDate +
@@ -207,4 +200,5 @@ public class Product{
                 ", updatedAt=" + updatedAt +
                 '}';
     }
+
 }
