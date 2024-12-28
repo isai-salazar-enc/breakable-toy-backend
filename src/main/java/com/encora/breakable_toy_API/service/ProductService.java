@@ -30,7 +30,25 @@ public class ProductService {
     }
 
     // Get all products
-    public List<ProductWithCategoryDTO> getProducts(Integer page){
+    public List<ProductWithCategoryDTO> getProducts(){
+        List<Product> productList = productRepository.findAll();
+        return productList.stream()
+                .map(product -> new ProductWithCategoryDTO(
+                        product.getId(),
+                        product.getIdCategory(),
+                        resolveCategoryName(product.getIdCategory()),
+                        product.getName(),
+                        product.getUnitPrice(),
+                        product.getExpirationDate(),
+                        product.getStock(),
+                        product.getCreatedAt(),
+                        product.getUpdatedAt()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    // Get all products with pagination
+    public List<ProductWithCategoryDTO> getPaginatedProducts(Integer page){
         if(page<1){
             throw new IllegalAccessError("Page value not allowed");
         }
@@ -143,10 +161,9 @@ public class ProductService {
         return new ResponseEntity<>(productRepository.update(product), HttpStatus.OK);
     }
 
-    // Método para resolver el nombre de una categoría dado su ID
+    // Resolve name of category based on ID
     private String resolveCategoryName(Long categoryId) {
         Category category = categoryRepository.findById(categoryId);
         return (category != null) ? category.getName() : "Unknown";
     }
-
 }
