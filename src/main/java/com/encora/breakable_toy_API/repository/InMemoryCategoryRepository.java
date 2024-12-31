@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -19,11 +21,15 @@ public class InMemoryCategoryRepository {
     @PostConstruct
     public void loadInitialData(){
         for(int i = 1; i<=5; i++){
-            categories.put(currentId++, new Category( (long) i, "Category " + 1));
+            categories.put(currentId++, new Category( (long) i, "Category " + i));
         }
     }
 
     public Category findById(Long id) {
         return categories.get(id);
+    }
+
+    public List<Category> findAll(){
+        return new ArrayList<>(categories.values());
     }
 }
