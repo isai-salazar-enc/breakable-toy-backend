@@ -86,10 +86,10 @@ public class ProductService {
     public ProductWithCategoryDTO create(Product product){
         // Validate name
         if (product.getName() == null || product.getName().isEmpty()) {
-            throw new IllegalArgumentException("The product name cannot be null or empty");
+            throw new IllegalArgumentException("The name of the product cannot be null or empty");
         }
         if (product.getName().length() > 120) {
-            throw new IllegalArgumentException("The product name cannot exceed 120 characters");
+            throw new IllegalArgumentException("The name of the product cannot exceed 120 characters");
         }
 
         // Validate price
@@ -132,7 +132,7 @@ public class ProductService {
      */
     public ResponseEntity<?> inStock(Long id, UpdateStockDTO updateStockDTO){
         if(updateStockDTO.getStock() == null || updateStockDTO.getStock() < 0){
-            return ResponseEntity.badRequest().body("Stock cannot be a non-negative integer.");
+            return ResponseEntity.badRequest().body("Stock cannot be a negative integer.");
         }
 
         Optional<Product> productOptional = productRepository.findById(id);
