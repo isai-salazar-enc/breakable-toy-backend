@@ -163,9 +163,28 @@ public class ProductService {
             return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
         }
 
-        product.setCreatedAt(productOptional.get().getCreatedAt()); // Incoming product does not change the created at date
-        product.setUpdatedAt(LocalDateTime.now());
-        return new ResponseEntity<>(productRepository.update(product), HttpStatus.OK);
+        try {
+            resolveCategoryName(product.getIdCategory()); // Check if it is a valid ID
+            product.setCreatedAt(productOptional.get().getCreatedAt()); // Incoming product does not change the created at date
+            product.setUpdatedAt(LocalDateTime.now());
+            Product newProduct = productRepository.update(product);
+            ProductWithCategoryDTO response = new ProductWithCategoryDTO(
+                    newProduct.getId(),
+                    newProduct.getIdCategory(),
+                    resolveCategoryName(newProduct.getIdCategory()),
+                    newProduct.getName(),
+                    newProduct.getUnitPrice(),
+                    newProduct.getExpirationDate(),
+                    newProduct.getStock(),
+                    newProduct.getCreatedAt(),
+                    newProduct.getUpdatedAt()
+            );
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (IllegalArgumentException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     // Resolve name of category based on ID

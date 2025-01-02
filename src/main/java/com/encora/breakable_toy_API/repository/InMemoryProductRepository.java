@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.*;
 
 // Repository that manages in memory items instead of a database
@@ -20,7 +21,15 @@ public class InMemoryProductRepository implements ProductRepository{
     @PostConstruct
     public void loadInitialData(){
         for(int i = 1; i<=30; i++){
-            products.put(currentId++, new Product( (long) i, (long) (i%5 + 1), "Product " + i, 100F, LocalDate.now(), 10, LocalDateTime.now(), LocalDateTime.now()));
+            if(i%5==0){
+                products.put(currentId++, new Product( (long) i, (long) (i%5 + 1), "Product " + i, 25.70F, LocalDate.now(), 6, LocalDateTime.now(), LocalDateTime.now()));
+                continue;
+            }
+            if(i%2==0){
+                products.put(currentId++, new Product( (long) i, (long) (i%5 + 1), "Product " + i, 25.70F, LocalDate.of(2025, Month.AUGUST, 25), 6, LocalDateTime.now(), LocalDateTime.now()));
+                continue;
+            }
+            products.put(currentId++, new Product( (long) i, (long) (i%5 + 1), "Product " + i, 100F, LocalDate.now(), 1, LocalDateTime.now(), LocalDateTime.now()));
         }
     }
 
