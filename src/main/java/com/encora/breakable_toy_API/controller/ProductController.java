@@ -37,7 +37,12 @@ public class ProductController {
         return productService.getPaginatedProducts(page);
     }
 
-    // Todo: change to PostMapping
+    @GetMapping("/metrics")
+    public ResponseEntity<Map<String, Object>> getProductMetrics(){
+        Map<String, Object> metrics = productService.getInventoryMetrics();
+        return ResponseEntity.ok(metrics);
+    }
+
     @PostMapping("/products/{id}/outofstock")
     public Product setProductOutOfStock(@PathVariable Long id){
         return productService.outOfStock(id);

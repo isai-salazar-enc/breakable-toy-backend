@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -174,5 +175,48 @@ public class ProductService {
             return category.getName();
         }
         throw new IllegalArgumentException("Category not found.");
+    }
+
+    public Map<String, Object> getInventoryMetrics() {
+        List<Product> productList = productRepository.findAll();
+
+        // Overall metrics
+        long totalProducts = productList.stream().filter(product -> product.getStock() > 0).mapToLong(Product::getStock).sum();
+        double totalValue = productList.stream().filter(product -> product.getStock() > 0).mapToDouble(p -> p.getStock() * p.getUnitPrice()).sum();
+        double averagePrice = productList.stream().filter(product -> product.getStock() > 0).mapToDouble(Product::getUnitPrice).average().orElse(0);
+
+        Map<String, Map<String, ?>> categoryMetrics = productList.stream()
+                .filter(product -> product.getStock() > 0)
+                .collect(Collectors.groupingBy(
+                        Product::getIdCategory,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(), // Agrupamos en listas de productos
+                                (List<Product> products) -> { // Especificamos explícitamente el tipo de lista
+                                    long categoryTotalProducts = products.stream().mapToLong(Product::getStock).sum();
+                                    double categoryTotalValue = products.stream().mapToDouble(p -> p.getStock() * p.getUnitPrice()).sum();
+                                    double categoryAveragePrice = products.stream().mapToDouble(Product::getUnitPrice).average().orElse(0);
+                                    return Map.of(
+                                            "totalProducts", categoryTotalProducts,
+                                            "totalValue", categoryTotalValue,
+                                            "averagePrice", categoryAveragePrice
+                                    );
+                                }
+                        )
+                ))
+                .entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> this.resolveCategoryName(entry.getKey()),
+                        Map.Entry::getValue
+                ));
+
+
+        return Map.of(
+                "overall", Map.of(
+                        "totalProducts", totalProducts,
+                        "totalValue", totalValue,
+                        "averagePrice", averagePrice
+                ),
+                "byCategory", categoryMetrics
+        );
     }
 }
