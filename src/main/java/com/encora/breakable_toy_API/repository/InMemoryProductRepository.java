@@ -1,7 +1,6 @@
 package com.encora.breakable_toy_API.repository;
 
 import com.encora.breakable_toy_API.models.Product;
-import com.encora.breakable_toy_API.models.ProductWithCategoryDTO;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
@@ -67,4 +66,14 @@ public class InMemoryProductRepository implements ProductRepository{
         products.put(product.getId(), product);
         return product;
     }
+
+    @Override
+    public Boolean delete(Long id) {
+        if (products.containsKey(id)) {
+            products.remove(id);
+            return true;
+        }
+        return false;
+    }
+
 }
