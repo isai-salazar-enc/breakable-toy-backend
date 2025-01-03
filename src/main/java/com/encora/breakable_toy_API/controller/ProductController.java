@@ -5,12 +5,12 @@ import com.encora.breakable_toy_API.models.ProductWithCategoryDTO;
 import com.encora.breakable_toy_API.models.UpdateStockDTO;
 import com.encora.breakable_toy_API.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "api")
@@ -46,10 +46,10 @@ public class ProductController {
     @PostMapping("/products")
     public ResponseEntity<?> create(@RequestBody Product product) {
         try {
-            Product createdProduct = productService.create(product);
+            ProductWithCategoryDTO createdProduct = productService.create(product);
             return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
         }
     }
 

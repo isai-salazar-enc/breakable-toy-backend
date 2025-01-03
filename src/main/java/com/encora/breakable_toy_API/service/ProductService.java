@@ -83,13 +83,13 @@ public class ProductService {
     }
 
     // Create a new product
-    public Product create(Product product){
+    public ProductWithCategoryDTO create(Product product){
         // Validate name
         if (product.getName() == null || product.getName().isEmpty()) {
-            throw new IllegalArgumentException("The product name cannot be null or empty");
+            throw new IllegalArgumentException("The name of the product cannot be null or empty");
         }
         if (product.getName().length() > 120) {
-            throw new IllegalArgumentException("The product name cannot exceed 120 characters");
+            throw new IllegalArgumentException("The name of the product cannot exceed 120 characters");
         }
 
         // Validate price
@@ -101,11 +101,6 @@ public class ProductService {
             throw new IllegalArgumentException("The category cannot be null");
         }
 
-        // Validate expiration date
-        if (product.getExpirationDate() == null) {
-            throw new IllegalArgumentException("The expiration date cannot be null");
-        }
-
         // Validate stock
         if (product.getStock() == null || product.getStock() < 0) {
             throw new IllegalArgumentException("Stock cannot be negative");
@@ -113,7 +108,18 @@ public class ProductService {
 
         product.setCreatedAt(LocalDateTime.now());
         product.setUpdatedAt(LocalDateTime.now());
-        return productRepository.create(product);
+        Product newProduct =  productRepository.create(product);
+        return new ProductWithCategoryDTO(
+                newProduct.getId(),
+                newProduct.getIdCategory(),
+                resolveCategoryName(newProduct.getIdCategory()),
+                newProduct.getName(),
+                newProduct.getUnitPrice(),
+                newProduct.getExpirationDate(),
+                newProduct.getStock(),
+                newProduct.getCreatedAt(),
+                newProduct.getUpdatedAt()
+        );
     }
 
 
@@ -126,7 +132,7 @@ public class ProductService {
      */
     public ResponseEntity<?> inStock(Long id, UpdateStockDTO updateStockDTO){
         if(updateStockDTO.getStock() == null || updateStockDTO.getStock() < 0){
-            return ResponseEntity.badRequest().body("Stock cannot be a non-negative integer.");
+            return ResponseEntity.badRequest().body("Stock cannot be a negative integer.");
         }
 
         Optional<Product> productOptional = productRepository.findById(id);
@@ -164,6 +170,9 @@ public class ProductService {
     // Resolve name of category based on ID
     private String resolveCategoryName(Long categoryId) {
         Category category = categoryRepository.findById(categoryId);
-        return (category != null) ? category.getName() : "Unknown";
+        if (category != null){
+            return category.getName();
+        }
+        throw new IllegalArgumentException("Category not found.");
     }
 }
