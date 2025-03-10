@@ -10,4 +10,5 @@ public interface ProductRepository {
     Product create(Product product); // Create new product
     Product outOfStock(Long id); // Make it unavailable and set stock to 0
     Product update(Product product); // Update information of the product
+    Boolean delete(Long id);
 }

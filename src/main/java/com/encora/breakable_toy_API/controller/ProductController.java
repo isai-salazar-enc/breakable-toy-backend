@@ -37,7 +37,12 @@ public class ProductController {
         return productService.getPaginatedProducts(page);
     }
 
-    // Todo: change to PostMapping
+    @GetMapping("/metrics")
+    public ResponseEntity<Map<String, Object>> getProductMetrics(){
+        Map<String, Object> metrics = productService.getInventoryMetrics();
+        return ResponseEntity.ok(metrics);
+    }
+
     @PostMapping("/products/{id}/outofstock")
     public Product setProductOutOfStock(@PathVariable Long id){
         return productService.outOfStock(id);
@@ -53,13 +58,23 @@ public class ProductController {
         }
     }
 
-    @PutMapping("products/{id}/instock")
+    @PutMapping("/products/{id}/instock")
     public ResponseEntity<?> setProductInStock(@PathVariable Long id, @RequestBody UpdateStockDTO updateStockDTO){
         return productService.inStock(id, updateStockDTO);   
     }
 
-    @PutMapping("products/{id}")
+    @PutMapping("/products/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable(value = "id") Long id, @RequestBody Product product){
         return productService.updateProduct(product, id);
+    }
+
+    @DeleteMapping("products/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") Long id){
+        try{
+            String response = productService.deleteProduct(id);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+        }
     }
 }
