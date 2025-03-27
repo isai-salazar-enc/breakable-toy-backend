@@ -34,17 +34,7 @@ public class ProductService {
     public List<ProductWithCategoryDTO> getProducts(){
         List<Product> productList = productRepository.findAll();
         return productList.stream()
-                .map(product -> new ProductWithCategoryDTO(
-                        product.getId(),
-                        product.getIdCategory(),
-                        resolveCategoryName(product.getIdCategory()),
-                        product.getName(),
-                        product.getUnitPrice(),
-                        product.getExpirationDate(),
-                        product.getStock(),
-                        product.getCreatedAt(),
-                        product.getUpdatedAt()
-                ))
+                .map( product -> new ProductWithCategoryDTO(product,resolveCategoryName(product.getIdCategory())) )
                 .collect(Collectors.toList());
     }
 
@@ -64,17 +54,7 @@ public class ProductService {
         }
 
         return productList.subList(fromIndex, toIndex).stream()
-                .map(product -> new ProductWithCategoryDTO(
-                        product.getId(),
-                        product.getIdCategory(),
-                        resolveCategoryName(product.getIdCategory()),
-                        product.getName(),
-                        product.getUnitPrice(),
-                        product.getExpirationDate(),
-                        product.getStock(),
-                        product.getCreatedAt(),
-                        product.getUpdatedAt()
-                ))
+                .map( product -> new ProductWithCategoryDTO(product,resolveCategoryName(product.getIdCategory())) )
                 .collect(Collectors.toList());
     }
 
@@ -110,17 +90,7 @@ public class ProductService {
         product.setCreatedAt(LocalDateTime.now());
         product.setUpdatedAt(LocalDateTime.now());
         Product newProduct =  productRepository.create(product);
-        return new ProductWithCategoryDTO(
-                newProduct.getId(),
-                newProduct.getIdCategory(),
-                resolveCategoryName(newProduct.getIdCategory()),
-                newProduct.getName(),
-                newProduct.getUnitPrice(),
-                newProduct.getExpirationDate(),
-                newProduct.getStock(),
-                newProduct.getCreatedAt(),
-                newProduct.getUpdatedAt()
-        );
+        return new ProductWithCategoryDTO(newProduct,resolveCategoryName(product.getIdCategory()));
     }
 
 
@@ -168,17 +138,7 @@ public class ProductService {
             product.setCreatedAt(productOptional.get().getCreatedAt()); // Incoming product does not change the created at date
             product.setUpdatedAt(LocalDateTime.now());
             Product newProduct = productRepository.update(product);
-            ProductWithCategoryDTO response = new ProductWithCategoryDTO(
-                    newProduct.getId(),
-                    newProduct.getIdCategory(),
-                    resolveCategoryName(newProduct.getIdCategory()),
-                    newProduct.getName(),
-                    newProduct.getUnitPrice(),
-                    newProduct.getExpirationDate(),
-                    newProduct.getStock(),
-                    newProduct.getCreatedAt(),
-                    newProduct.getUpdatedAt()
-            );
+            ProductWithCategoryDTO response = new ProductWithCategoryDTO(newProduct,resolveCategoryName(product.getIdCategory()));
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
