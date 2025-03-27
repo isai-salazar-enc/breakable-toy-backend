@@ -1,12 +1,9 @@
 package com.encora.breakable_toy_API.repository;
 
 import com.encora.breakable_toy_API.models.Category;
-import com.encora.breakable_toy_API.models.Product;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
