@@ -30,11 +30,11 @@ public class ProductController {
     }
 
     @GetMapping("/products/{page}")
-    public List<ProductWithCategoryDTO> getPaginatedProducts(@PathVariable(required = true) Integer page){
+    public ResponseEntity<List<ProductWithCategoryDTO>> getPaginatedProducts(@PathVariable(required = true) Integer page){
         if(page == null){
             page = 1;
         }
-        return productService.getPaginatedProducts(page);
+        return ResponseEntity.ok(productService.getPaginatedProducts(page));
     }
 
     @GetMapping("/metrics")
@@ -44,37 +44,31 @@ public class ProductController {
     }
 
     @PostMapping("/products/{id}/outofstock")
-    public Product setProductOutOfStock(@PathVariable Long id){
-        return productService.outOfStock(id);
+    public ResponseEntity<Product> setProductOutOfStock(@PathVariable Long id){
+        return ResponseEntity.ok(productService.outOfStock(id));
     }
 
     @PostMapping("/products")
-    public ResponseEntity<?> create(@RequestBody Product product) {
-        try {
-            ProductWithCategoryDTO createdProduct = productService.create(product);
-            return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
-        }
+    public ResponseEntity<ProductWithCategoryDTO> create(@RequestBody Product product) {
+        ProductWithCategoryDTO createdProduct = productService.create(product);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
     @PutMapping("/products/{id}/instock")
-    public ResponseEntity<?> setProductInStock(@PathVariable Long id, @RequestBody UpdateStockDTO updateStockDTO){
-        return productService.inStock(id, updateStockDTO);   
+    public ResponseEntity<Product> setProductInStock(@PathVariable Long id, @RequestBody UpdateStockDTO updateStockDTO){
+        Product updatedProduct = productService.inStock(id, updateStockDTO);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     @PutMapping("/products/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable(value = "id") Long id, @RequestBody Product product){
-        return productService.updateProduct(product, id);
+        ProductWithCategoryDTO updatedProduct =  productService.updateProduct(product, id);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     @DeleteMapping("products/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
-        try{
-            String response = productService.deleteProduct(id);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
-        }
+        String response = productService.deleteProduct(id);
+        return ResponseEntity.ok(response);
     }
 }

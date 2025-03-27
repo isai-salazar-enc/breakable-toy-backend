@@ -7,8 +7,6 @@ import com.encora.breakable_toy_API.models.UpdateStockDTO;
 import com.encora.breakable_toy_API.repository.InMemoryCategoryRepository;
 import com.encora.breakable_toy_API.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -99,52 +97,45 @@ public class ProductService {
      * 
      * @param id Product ID.
      * @param updateStockDTO The data transfer object containing the new stock value.
-     * @return {@link ResponseEntity}
+     * @return {@link Product}
      */
-    public ResponseEntity<?> inStock(Long id, UpdateStockDTO updateStockDTO){
-        if(updateStockDTO.getStock() == null || updateStockDTO.getStock() < 0){
-            return ResponseEntity.badRequest().body("Stock cannot be a negative integer.");
+    public Product inStock(Long id, UpdateStockDTO updateStockDTO){
+        if (updateStockDTO.getStock() == null || updateStockDTO.getStock() < 0) {
+            throw new IllegalArgumentException("Stock cannot be a negative integer.");
         }
-
+    
         Optional<Product> productOptional = productRepository.findById(id);
-        if(productOptional.isEmpty()){
-            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+        if (productOptional.isEmpty()) {
+            throw new IllegalArgumentException("Product not found.");
         }
-
+    
         // Update stock
         Product product = productOptional.get();
         product.setStock(updateStockDTO.getStock());
-
+    
         // Save updated product in repository
         productRepository.update(product);
-
-        return ResponseEntity.ok(product);
+    
+        return product;
     }
 
-    public ResponseEntity<?> updateProduct(Product product, Long id){
+    public ProductWithCategoryDTO updateProduct(Product product, Long id){
         if(product.getId() == null){
-            return new ResponseEntity<>("ID cannot be empty", HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("ID cannot be null");
         }
         if(!product.getId().equals(id)){
-            return new ResponseEntity<>("The ID on the request does not match the ID in the body.", HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("The ID on the request does not match the ID in the body.");
         }
         Optional<Product> productOptional = productRepository.findById(product.getId());
         if(productOptional.isEmpty()){
-            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+            throw new IllegalArgumentException("Product not found.");
         }
 
-        try {
-            resolveCategoryName(product.getIdCategory()); // Check if it is a valid ID
-            product.setCreatedAt(productOptional.get().getCreatedAt()); // Incoming product does not change the created at date
-            product.setUpdatedAt(LocalDateTime.now());
-            Product newProduct = productRepository.update(product);
-            ProductWithCategoryDTO response = new ProductWithCategoryDTO(newProduct,resolveCategoryName(product.getIdCategory()));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        catch (IllegalArgumentException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
+        resolveCategoryName(product.getIdCategory()); // Check if it is a valid ID
+        product.setCreatedAt(productOptional.get().getCreatedAt()); // Incoming product does not change the created at date
+        product.setUpdatedAt(LocalDateTime.now());
+        Product newProduct = productRepository.update(product);
+        return new ProductWithCategoryDTO(newProduct,resolveCategoryName(product.getIdCategory()));
     }
 
     // Resolve name of category based on ID
