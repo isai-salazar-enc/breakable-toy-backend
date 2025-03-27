@@ -192,7 +192,7 @@ public class ProductService {
 
     public String deleteProduct(Long id){
         if(productRepository.delete(id)){
-            return "Producto eliminado correctamente.";
+            return "Producto deleted.";
         }
         else{
             throw new IllegalArgumentException("Product not found.");
