@@ -26,6 +26,19 @@ public class ProductWithCategoryDTO {
         this.updatedAt = updatedAt;
     }
 
+    // Constructor to create a ProductWithCategoryDTO from a Product and a category name
+    public ProductWithCategoryDTO(Product product, String categoryName) {
+        this.id = product.getId();
+        this.idCategory = product.getIdCategory();
+        this.category = categoryName;
+        this.name = product.getName();
+        this.unitPrice = product.getUnitPrice();
+        this.expirationDate = product.getExpirationDate();
+        this.stock = product.getStock();
+        this.createdAt = product.getCreatedAt();
+        this.updatedAt = product.getUpdatedAt();
+    }
+
     public Long getId() {
         return id;
     }

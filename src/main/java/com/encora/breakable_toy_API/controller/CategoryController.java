@@ -1,7 +1,6 @@
 package com.encora.breakable_toy_API.controller;
 
 import com.encora.breakable_toy_API.models.Category;
-import com.encora.breakable_toy_API.models.ProductWithCategoryDTO;
 import com.encora.breakable_toy_API.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
