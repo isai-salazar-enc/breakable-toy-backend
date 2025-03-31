@@ -12,9 +12,6 @@ A backend API built with **Spring Boot** to manage products and categories. This
 6. [Running the Application](#running-the-application)
 7. [API Endpoints](#api-endpoints)
 8. [Testing](#testing)
-9. [Versioning](#versioning)
-10. [Future Improvements](#future-improvements)
-
 ---
 
 ## **Project Overview**
