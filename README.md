@@ -44,17 +44,18 @@ The Breakable Toy API is a RESTful API that allows users to manage products and 
 ## **Project Structure**
 The project follows a standard **Spring Boot** structure:
 
-src/main/java/com/encora/breakable_toy_API/ 
-├── config/ # Configuration files
-├── controller/ # REST controllers for handling API requests 
-├── models/ # Data models and DTOs 
-├── repository/ # In-memory repositories for data storage 
-├── service/ # Business logic and service layer 
-└── BreakableToyApiApplication.java # Main application entry point
+src/main/java/com/encora/breakable_toy_API/  
+├── config/                      # Configuration files (e.g., CORS, exception handling)  
+├── controller/                  # REST controllers for handling API requests  
+├── models/                      # Data models and DTOs  
+├── repository/                  # In-memory repositories for data storage  
+├── service/                     # Business logic and service layer  
+└── BreakableToyApiApplication.java  # Main application entry point  
 
-src/test/java/com/encora/breakable_toy_API/ 
-├── service/ # Unit tests for services 
-└── BreakableToyApiApplicationTests.java # Application context test
+src/test/java/com/encora/breakable_toy_API/  
+├── service/                     # Unit tests for services  
+└── BreakableToyApiApplicationTests.java  # Application context test
+
 
 ---
 
